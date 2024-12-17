@@ -1,31 +1,28 @@
 import React, { useState } from "react";
-import initialFriends from "./data";
-import FriendsList from "./components/FriendsList";
-import Button from "./components/Button";
-import FormAddFriend from "./components/FormAddFriend";
-import FormSplitBill from "./components/FormSplitBill";
+import initialFriends from "./data.js";
+import FriendsList from "./components/FriendsList.js";
+import Button from "./components/Button.js";
+import FormAddFriend from "./components/FormAddFriend.js";
+import FormSplitBill from "./components/FormSplitBill.js";
 
 function App() {
   const [friends, setFriends] = useState(initialFriends);
 
-  const [showAddFriend, setShowAddFriend] = useState(false);
-
-  const [selectedFriend, setSelectedFriend] = useState(null);
-
-  function handleShowAddFriend() {
-    setShowAddFriend(!showAddFriend);
-  }
-
-  function handleAddFriend(friend) {
+  function addFriend(friend) {
     setFriends((friends) => [...friends, friend]);
     setShowAddFriend(false);
   }
 
+  const [showAddFriend, setShowAddFriend] = useState(false);
+
+  function handleShowAddFriend() {
+    setShowAddFriend((showAddFriend) => !showAddFriend);
+  }
+
+  const [selectedFriend, setSelectedFriend] = useState(null);
+
   function handleSelectedFriend(friend) {
-    // setSelectedFriend(friend);
-    setSelectedFriend((selectedFriend) =>
-      selectedFriend?.id === friend.id ? null : friend
-    );
+    setSelectedFriend((cur) => (cur?.id === friend.id ? null : friend));
     setShowAddFriend(false);
   }
 
@@ -37,6 +34,8 @@ function App() {
           : friend
       )
     );
+
+    setSelectedFriend(null);
   }
 
   return (
@@ -44,11 +43,11 @@ function App() {
       <div className="sidebar">
         <FriendsList
           friends={friends}
-          onSelection={handleSelectedFriend}
-          selectedFriend={selectedFriend}
+          selectedFriend={handleSelectedFriend}
+          friend={selectedFriend}
         />
 
-        {showAddFriend && <FormAddFriend addFriend={handleAddFriend} />}
+        {showAddFriend && <FormAddFriend addFriend={addFriend} />}
 
         <Button onClick={handleShowAddFriend}>
           {showAddFriend ? "Close" : "Add Friend"}
@@ -59,6 +58,7 @@ function App() {
         <FormSplitBill
           selectedFriend={selectedFriend}
           onSplitBill={handleSplitBill}
+          key={selectedFriend.id}
         />
       )}
     </div>
